@@ -23,8 +23,5 @@ class ship {
 }
 
 
-const new_ship = new ship(4, [{A : 1}]);
-
-
-console.log(new_ship.length);
+module.exports = ship;
 
