@@ -4,6 +4,7 @@ import random
 
 
 def game(): 
+    turn = 0
     gameover = False
     current_turn = "player"
     player_board = gameboard("player", create_board(0, 10), 0, None, 4)
@@ -17,14 +18,18 @@ def game():
 
         gameover = check_for_winner(player_board)
         if current_turn == "player" and gameover == False:
-            print(player_board.name)
+            print("current turn: " + str(turn))
+            print(player_board.name + " turn")
             attack(computer_board)
             current_turn = "computer"
+            turn += 1
 
         gameover = check_for_winner(computer_board)
         if current_turn == "computer" and gameover == False:
+            print("current turn: " + str(turn))
             computer_attack(player_board)
             current_turn = "player"
+            turn += 1
     
 
 def create_board(character, size):
@@ -90,8 +95,7 @@ def pick_ship_location(board, ships):
     correct_x_y = False
     
     while correct_x_y == False:
-        x = int(input("enter x value: "))
-        y = int(input("enter y value: "))
+        x, y = get_correct_x_y()
         if y < 9 and x+ship_list[0] < 9 and y > -1 and x > -1:
             if board[y][x] != 2:
                 if ship_list != []:
@@ -105,6 +109,19 @@ def pick_ship_location(board, ships):
                 print("incorrect x, y try again")
     
     return board
+
+
+def get_correct_x_y():
+    correct_x_y = False
+    while correct_x_y == False:
+        x = input("enter x value: ")
+        y = input("enter y value: ")
+        if x.isdigit() == True:
+            if y.isdigit() == True:
+                x = int(x)
+                y = int(y)
+                return(x, y)
+
 
 
 def place_ship(x, y, board, ship):
@@ -166,7 +183,7 @@ def computer_attack(gameboard):
                 correct_x_y = True
 
 
-    print("computer attack")
+    print("computer turn")
     print_board(gameboard.board)
     time.sleep(2)
 
@@ -178,8 +195,7 @@ def attack(gameboard):
     print_board(gameboard.hidden_board)
 
     while correct_x_y == False:
-        x = int(input("enter x value: "))
-        y = int(input("enter y value: "))
+        x, y = get_correct_x_y()
         if y < 9 and x < 9 and y > -1 and x > -1:
             for i in gameboard.MissesAndHits:
                 if i == [y, x]:
