@@ -1,22 +1,31 @@
 from pprint import pprint
 import time
+import random
 
 def game(): 
     gameover = False
     current_turn = "player"
-    player_board = gameboard("player", create_board(0, 10), 0, None)
-    computer_board = gameboard("computer", create_board(0, 10), 0, create_board("?", 10))
+    player_board = gameboard("player", create_board(0, 10), 0, None, 4)
+    computer_board = gameboard("computer", create_board(0, 10), 0, create_board("?", 10), 0)
 
     print_board(player_board.board)
     player_board.board = pick_ship_location(player_board.board, [4])
 
     while gameover == False:
-        if current_turn == "player":
-            print(player_board.name)
-            print_board(player_board.board)
-            attack(computer_board)
 
+        gameover = check_for_winner(player_board)
+        if current_turn == "player" and gameover == False:
+            print(player_board.name)
+            attack(computer_board)
+            current_turn = "computer"
+
+        gameover = check_for_winner(computer_board)
+        if current_turn == "computer" and gameover == False:
+            computer_attack(player_board)
+            current_turn = "player"
     
+
+
 def create_board(character, size):
     grid = []
     for i in range(size):
@@ -29,12 +38,13 @@ def create_board(character, size):
 
 class gameboard():
 
-    def __init__(self, name, board, hits, hidden_board, MissesAndHits=[]):
+    def __init__(self, name, board, hits, hidden_board, ship_value, MissesAndHits=[]):
          self.name = name
          self.board = board
          self.hits = hits
          self.hidden_board = hidden_board
          self.MissesAndHits = MissesAndHits
+         self.ship_value = ship_value
 
 
 class ship():
@@ -65,6 +75,14 @@ class ship():
     def is_placed(self):
         self.placed = True
 
+
+
+def check_for_winner(gameboard):
+    if int(gameboard.hits) >= int(gameboard.ship_value):
+        print(gameboard.name + " has lost the game")
+        return True
+    else:
+        return False
 
 
 def pick_ship_location(board, ships):
@@ -104,6 +122,32 @@ def place_ship(x, y, board, ship):
 
 
 
+def computer_attack(gameboard):
+    move_tried = False
+    correct_x_y = False
+    while correct_x_y == False:
+        x = random.randrange(-1, 10)
+        y = random.randrange(-1, 10)
+        if y < 9 and x < 9 and y > -1 and x > -1:
+            for i in gameboard.MissesAndHits:
+                if i == [y, x]:
+                    move_tried = True
+            if gameboard.board[y][x] == 2 and move_tried == False:
+                gameboard.hits += 1
+                gameboard.MissesAndHits += [[y, x]]
+                gameboard.board[y][x] = "X"
+                correct_x_y = True
+            elif move_tried == False:
+                gameboard.board[y][x] = "M"
+                gameboard.MissesAndHits += [[y, x]]
+                correct_x_y = True
+
+
+    print("computer attack")
+    print_board(gameboard.board)
+    time.sleep(2)
+
+
 def attack(gameboard):
     move_tried = False
     correct_x_y = False
@@ -117,16 +161,19 @@ def attack(gameboard):
                     move_tried = True
             if gameboard.board[y][x] == 2 and move_tried == False:
                 gameboard.hits += 1
+                gameboard.MissesAndHits += [[y, x]]
                 gameboard.hidden_board[y][x] = "X"
                 correct_x_y = True
+                move_tried = False
             elif move_tried == False:
                 gameboard.hidden_board[y][x] = "O"
+                gameboard.MissesAndHits += [[y, x]]
                 correct_x_y = True
+                move_tried = False
+        else:
+            print("you already tried that attack")
 
-            else:
-                print("you already tried that attack")
-
-
+    print("player attack")
     print_board(gameboard.hidden_board)
     time.sleep(2)
 
