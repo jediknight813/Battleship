@@ -2,11 +2,13 @@ from pprint import pprint
 import time
 import random
 
+
 def game(): 
     gameover = False
     current_turn = "player"
     player_board = gameboard("player", create_board(0, 10), 0, None, 4)
-    computer_board = gameboard("computer", create_board(0, 10), 0, create_board("?", 10), 0)
+    computer_board = gameboard("computer", create_board(0, 10), 0, create_board("?", 10), 5)
+    computer_board.board = place_ships_randomly_on_board(computer_board.board, [3,2])
 
     print_board(player_board.board)
     player_board.board = pick_ship_location(player_board.board, [4])
@@ -24,7 +26,6 @@ def game():
             computer_attack(player_board)
             current_turn = "player"
     
-
 
 def create_board(character, size):
     grid = []
@@ -76,7 +77,6 @@ class ship():
         self.placed = True
 
 
-
 def check_for_winner(gameboard):
     if int(gameboard.hits) >= int(gameboard.ship_value):
         print(gameboard.name + " has lost the game")
@@ -122,6 +122,29 @@ def place_ship(x, y, board, ship):
 
 
 
+def place_ships_randomly_on_board(board, ship_list):
+    correct_x_y = False
+
+    while correct_x_y == False:
+        x = random.randrange(-1, 10)
+        y = random.randrange(-1, 10)
+        if y < 9 and x+ship_list[0] < 9 and y > -1 and x > -1:
+            if board[y][x] != 2:
+                if ship_list != []:
+                    board = place_ship(x, y, board, ship_list[0])
+                    ship_list.remove(ship_list[0])
+                    print("place ships")
+                    print_board(board)
+                    if ship_list == []:
+                        correct_x_y = True
+            else:
+                print("incorrect x, y try again")
+    
+    return board
+
+
+
+
 def computer_attack(gameboard):
     move_tried = False
     correct_x_y = False
@@ -151,7 +174,9 @@ def computer_attack(gameboard):
 def attack(gameboard):
     move_tried = False
     correct_x_y = False
+
     print_board(gameboard.hidden_board)
+
     while correct_x_y == False:
         x = int(input("enter x value: "))
         y = int(input("enter y value: "))
@@ -164,14 +189,16 @@ def attack(gameboard):
                 gameboard.MissesAndHits += [[y, x]]
                 gameboard.hidden_board[y][x] = "X"
                 correct_x_y = True
-                move_tried = False
+
             elif move_tried == False:
                 gameboard.hidden_board[y][x] = "O"
                 gameboard.MissesAndHits += [[y, x]]
                 correct_x_y = True
+
+            else:
+                print("you already tried that attack")
                 move_tried = False
-        else:
-            print("you already tried that attack")
+                
 
     print("player attack")
     print_board(gameboard.hidden_board)
