@@ -3,7 +3,7 @@ import time
 import random
 
 
-def game(): 
+def game(): #starts and manages the game
     turn = 0
     gameover = False
     current_turn = "player"
@@ -15,8 +15,7 @@ def game():
     player_board.board = pick_ship_location(player_board.board, [4])
 
     while gameover == False:
-
-        gameover = check_for_winner(player_board)
+        gameover = check_for_winner(player_board) #handles the players turn
         if current_turn == "player" and gameover == False:
             print("current turn: " + str(turn))
             print(player_board.name + " turn")
@@ -24,7 +23,8 @@ def game():
             current_turn = "computer"
             turn += 1
 
-        gameover = check_for_winner(computer_board)
+
+        gameover = check_for_winner(computer_board) #handles the computers turn
         if current_turn == "computer" and gameover == False:
             print("current turn: " + str(turn))
             computer_attack(player_board)
@@ -32,7 +32,7 @@ def game():
             turn += 1
     
 
-def create_board(character, size):
+def create_board(character, size): #creates the board dynamically 
     grid = []
     for i in range(size):
         grid.append([])
@@ -42,7 +42,7 @@ def create_board(character, size):
     return grid
 
 
-class gameboard():
+class gameboard(): #class for the gameboard
 
     def __init__(self, name, board, hits, hidden_board, ship_value, MissesAndHits=[]):
          self.name = name
@@ -53,7 +53,7 @@ class gameboard():
          self.ship_value = ship_value
 
 
-class ship():
+class ship(): #prototype ship class
 
     def __init__(self, position, ship_type, length, placed):
         self.position = position #positon = [[1,2], [1,3], [1,4]]
@@ -82,7 +82,8 @@ class ship():
         self.placed = True
 
 
-def check_for_winner(gameboard):
+
+def check_for_winner(gameboard): #takes a gameboard and checks for winner
     if int(gameboard.hits) >= int(gameboard.ship_value):
         print(gameboard.name + " has lost the game")
         return True
@@ -90,7 +91,7 @@ def check_for_winner(gameboard):
         return False
 
 
-def pick_ship_location(board, ships):
+def pick_ship_location(board, ships): #allows the player to pick where they want to place their ships
     ship_list = ships #length of eatch ships, can add as many as you want
     correct_x_y = False
     
@@ -111,7 +112,7 @@ def pick_ship_location(board, ships):
     return board
 
 
-def get_correct_x_y():
+def get_correct_x_y(): #makes sure the x, y is correct
     correct_x_y = False
     while correct_x_y == False:
         x = input("enter x value: ")
@@ -123,8 +124,7 @@ def get_correct_x_y():
                 return(x, y)
 
 
-
-def place_ship(x, y, board, ship):
+def place_ship(x, y, board, ship): #places the ship on the gameboard
     length = ship
 
     board[y][x] = 2
@@ -138,8 +138,7 @@ def place_ship(x, y, board, ship):
     return board
 
 
-
-def place_ships_randomly_on_board(board, ship_list):
+def place_ships_randomly_on_board(board, ship_list): #randomly places all the ships on the passed board
     correct_x_y = False
 
     while correct_x_y == False:
@@ -160,9 +159,7 @@ def place_ships_randomly_on_board(board, ship_list):
     return board
 
 
-
-
-def computer_attack(gameboard):
+def computer_attack(gameboard): #attacks a random position on the board that has not been attacked
     move_tried = False
     correct_x_y = False
     while correct_x_y == False:
@@ -188,7 +185,7 @@ def computer_attack(gameboard):
     time.sleep(2)
 
 
-def attack(gameboard):
+def attack(gameboard): #lets the player pick where they want to attack
     move_tried = False
     correct_x_y = False
 
@@ -221,7 +218,7 @@ def attack(gameboard):
     time.sleep(2)
 
 
-def print_board(board):
+def print_board(board): #prints the game board
     header = len(board[0]*2)
     x = "" 
     for i in range(header):
@@ -235,4 +232,6 @@ def print_board(board):
     print(x)
 
 game()
+
+
 
