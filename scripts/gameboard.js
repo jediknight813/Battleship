@@ -13,39 +13,42 @@ class gameboard {
 
 player_board_id = document.getElementById('player_board')
 
+computer_board_id = document.getElementById('computer_board')
+
 
 function create_board(board_id) {
     
-
-
 
     return board
 }
 
 
-
-var create_grid_number = 101
-
-
-function create_new_grid() {
-    while (create_grid_number > 1) {
-        createGrid()
+function create_new_grid(grid_id) {
+    var create_grid_number = 100
+    while (create_grid_number > 0) {
+        createGrid(grid_id)
         create_grid_number -= 1 
         }
     }
 
 
-
-
-function createGrid() {
-    var div = document.createElement("div");
+function createGrid(grid_id) {
+    var div = document.createElement("button");
     div.className = "cell"
-    document.getElementById("#grid-container").appendChild(div)
+    div.addEventListener("click", grid_tile_hit);
+    document.getElementById(grid_id).appendChild(div)
 }
 
 
+function grid_tile_hit() {
+    this.className = "tile_hit"
+}
 
-create_new_grid(player_board_id)
+
+function create_boards() {
+    create_new_grid("#computer-grid-container")
+    create_new_grid("#player-grid-container")
+}
 
 
 // def game(): #starts and manages the game

@@ -13,7 +13,6 @@ class game():
         self.computer_board = computer_board
 
         
-
 def game_manager(): #starts and manages the game
     game_class = game()
     game_class.player_board = gameboard("player", create_board(0, 10), 0, None, 4)
@@ -228,7 +227,7 @@ def attack(gameboard): #lets the player pick where they want to attack
 
 
 def print_board(board): #prints the game board
-    header = len(board[0]*2)
+    header = len(board[0]*2)-1
     x = "" 
     for i in range(header):
          x += "-"
