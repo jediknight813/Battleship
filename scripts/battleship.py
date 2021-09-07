@@ -3,33 +3,42 @@ import time
 import random
 
 
-def game(): #starts and manages the game
-    turn = 0
-    gameover = False
-    current_turn = "player"
-    player_board = gameboard("player", create_board(0, 10), 0, None, 4)
-    computer_board = gameboard("computer", create_board(0, 10), 0, create_board("?", 10), 5)
-    computer_board.board = place_ships_randomly_on_board(computer_board.board, [3,2])
 
-    print_board(player_board.board)
-    player_board.board = pick_ship_location(player_board.board, [4])
+class game():
+    def __init__(self, turn=0, gameover=False, current_turn="player", player_board=None, computer_board=None):
+        self.turn = turn
+        self.gameover = gameover
+        self.current_turn = current_turn
+        self.player_board = player_board
+        self.computer_board = computer_board
 
-    while gameover == False:
-        gameover = check_for_winner(player_board) #handles the players turn
-        if current_turn == "player" and gameover == False:
-            print("current turn: " + str(turn))
-            print(player_board.name + " turn")
-            attack(computer_board)
-            current_turn = "computer"
-            turn += 1
+        
+
+def game_manager(): #starts and manages the game
+    game_class = game()
+    game_class.player_board = gameboard("player", create_board(0, 10), 0, None, 4)
+    game_class.computer_board =  gameboard("computer", create_board(0, 10), 0, create_board("?", 10), 5)
+    game_class.computer_board.board = place_ships_randomly_on_board(game_class.computer_board.board, [3,2])
+    print_board(game_class.player_board.board)
+    game_class.player_board.board = pick_ship_location(game_class.player_board.board, [4])
 
 
-        gameover = check_for_winner(computer_board) #handles the computers turn
-        if current_turn == "computer" and gameover == False:
-            print("current turn: " + str(turn))
-            computer_attack(player_board)
-            current_turn = "player"
-            turn += 1
+    while game_class.gameover == False:
+        game_class.gameover = check_for_winner(game_class.player_board) #handles the players turn
+        if game_class.current_turn == "player" and game_class.gameover == False:
+            print("current turn: " + str(game_class.turn))
+            print(game_class.player_board.name + " turn")
+            attack(game_class.computer_board)
+            game_class.current_turn = "computer"
+            game_class.turn += 1
+
+
+        game_class.gameover = check_for_winner(game_class.computer_board) #handles the computers turn
+        if game_class.current_turn == "computer" and game_class.gameover == False:
+            print("current turn: " + str(game_class.turn))
+            computer_attack(game_class.player_board)
+            game_class.current_turn = "player"
+            game_class.turn += 1
     
 
 def create_board(character, size): #creates the board dynamically 
@@ -149,7 +158,7 @@ def place_ships_randomly_on_board(board, ship_list): #randomly places all the sh
                 if ship_list != []:
                     board = place_ship(x, y, board, ship_list[0])
                     ship_list.remove(ship_list[0])
-                    print("place ships")
+                    print("computer place ships")
                     print_board(board)
                     if ship_list == []:
                         correct_x_y = True
@@ -231,7 +240,7 @@ def print_board(board): #prints the game board
 
     print(x)
 
-game()
+game_manager()
 
 
 
