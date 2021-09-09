@@ -70,7 +70,7 @@ function create_board(gameboard, board_id, board_name) {
 
 
 function place_player_ships() {
-    this.className = "hover"
+    //this.className = "hover"
     get_tile_index.call(this)
 }
 
@@ -103,6 +103,31 @@ function create_new_grid(grid_id) {
     }
 
 
+
+
+
+function place_ship(x, y, board, ship) { 
+    length = ship
+
+
+    let b = board[y-1][x]
+    b.className = "ship_tile"
+    if (length > 1){
+       let a = board[y-1][x+1]
+       a.className = "ship_tile"
+    }
+        if (length > 2){
+           let b = board[y-1][x+2]
+           b.className = "ship_tile"
+        }
+            if (length > 3){
+               let c = board[y-1][x+3]
+               c.className = "ship_tile"
+            }
+
+    }
+
+
 function grid_tile_hit() {
     if (game_variables.current_turn == "player" && game_variables.ships_placed == true) {
         this.className = "tile_hit"
@@ -119,6 +144,7 @@ function get_tile_index() {
         x = game_variables.player_gameboard.div_board[index_y].indexOf(this)
         index_y += 1
     }
+    place_ship(x, index_y, game_variables.player_gameboard.div_board, 4)
     console.log(index_y-1, + " " + x)
 }
 

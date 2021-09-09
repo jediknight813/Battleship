@@ -61,6 +61,12 @@
     background-color: crimson;
 }
 
+.ship_tile {
+    height: 56px;
+    width: 56px;
+    background-color: rgb(91, 86, 87);
+}
+
 .computer_name {
     position: absolute;
     top: 24%;
