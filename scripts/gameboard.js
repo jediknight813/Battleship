@@ -4,7 +4,7 @@ const range = (start, end) => Array.from({length: (end - start)}, (v, k) => k + 
 
 
 class gameboard {
-    constructor(name, div_board=[], board=[], hits=0, hidden_board=[], ship_value=10, MissesAndHits=[], div_board_unlocked=false) {
+    constructor(name, ship_list, div_board=[], board=[], hits=0, hidden_board=[], ship_value=10, MissesAndHits=[], div_board_unlocked=false) {
         this.name = name
         this.div_board = div_board
         this.board = board
@@ -13,6 +13,7 @@ class gameboard {
         this.MissesAndHits = MissesAndHits
         this.ship_value = ship_value
         this.div_board_unlocked = div_board_unlocked
+        this.ship_list = ship_list
 
     }
 }
@@ -40,7 +41,7 @@ function game_manager() {
     game_variables.player_gameboard.hidden_board = create_gameboard()
     game_variables.computer_gameboard.hidden_board = create_gameboard()
     game_variables.computer_gameboard.board = create_gameboard()
-
+    game_variables.player_gameboard.ship_list = [3, 4, 2, 2, 1]
 
 }
 
@@ -144,7 +145,36 @@ function get_tile_index() {
         x = game_variables.player_gameboard.div_board[index_y].indexOf(this)
         index_y += 1
     }
-    place_ship(x, index_y, game_variables.player_gameboard.div_board, 4)
+    pick_ship_location(game_variables.player_gameboard.div_board, x, index_y-1) 
     console.log(index_y-1, + " " + x)
 }
+
+
+
+
+
+
+function pick_ship_location(board, x, y) {
+    let ship_list = game_variables.player_gameboard.ship_list 
+    let correct_x_y = false
+    while (correct_x_y == false){
+        if (y < 9 && x+ship_list[0] < 9 && y > -1 && x > -1){
+            if (board[y][x].className != "ship_tile"){
+                if (ship_list != []){
+                    board = place_ship(x, y+1, board, ship_list[0])
+                    game_variables.player_gameboard.ship_list.shift();
+                }
+                    if (game_variables.player_gameboard.ship_list == []){
+                        correct_x_y = true
+                    }
+                
+            else
+                return null
+            }
+    }
+    return board
+    }
+}
+
+
 
