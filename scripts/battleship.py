@@ -1,7 +1,5 @@
-from pprint import pprint
 import time
 import random
-
 
 
 class game():

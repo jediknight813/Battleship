@@ -60,3 +60,37 @@
     width: 56px;
     background-color: crimson;
 }
+
+.computer_name {
+    position: absolute;
+    top: 24%;
+    left: 22%;
+    color: black;
+    font-size: 40px;
+    font-family: Impact, Haettenschweiler, 'Arial Narrow Bold', sans-serif;
+}
+
+.player_name {
+    position: absolute;
+    top: 24%;
+    right: 26%;
+    color: black;
+    font-size: 40px;
+    font-family: Impact, Haettenschweiler, 'Arial Narrow Bold', sans-serif;
+}
+
+
+.status_text {
+    position: absolute;
+    top: 20%;
+    right: 45%;
+    color: black;
+    font-size: 40px;
+    font-family: Impact, Haettenschweiler, 'Arial Narrow Bold', sans-serif;
+}
+
+.hover {
+    height: 56px;
+    width: 56px;
+    background-color: rgb(112, 230, 16);
+}

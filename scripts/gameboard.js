@@ -1,5 +1,6 @@
 player_board_id = document.getElementById('#computer-grid-container')
 computer_board_id = document.getElementById('#computer-grid-container')
+const range = (start, end) => Array.from({length: (end - start)}, (v, k) => k + start);
 
 
 class gameboard {
@@ -16,12 +17,14 @@ class gameboard {
     }
 }
 
+
 class game {
-    constructor(gameover, current_turn, computer_gameboard, player_gameboard) {
+    constructor(gameover=false, current_turn="player", computer_gameboard, player_gameboard, ships_placed=false) {
         this.gameover = gameover
         this.current_turn = current_turn
         this.computer_gameboard = computer_gameboard
         this.player_gameboard = player_gameboard
+        this.ships_placed = ships_placed
     }
 
 }
@@ -29,18 +32,20 @@ class game {
 
 function game_manager() {
     game_variables = new game()
-    game_variables.computer_board = new gameboard("computer")
-    game_variables.player_board = new gameboard("player")
-    create_board(game_variables.player_board, "#player-grid-container")
-    create_board(game_variables.computer_board, "#computer-grid-container")
+    game_variables.computer_gameboard = new gameboard("computer")
+    game_variables.player_gameboard = new gameboard("player")
+    create_board(game_variables.player_gameboard, "#player-grid-container", "player")
+    create_board(game_variables.computer_gameboard, "#computer-grid-container", "computer")
+    game_variables.player_gameboard.board = create_gameboard()
+    game_variables.player_gameboard.hidden_board = create_gameboard()
+    game_variables.computer_gameboard.hidden_board = create_gameboard()
+    game_variables.computer_gameboard.board = create_gameboard()
 
-    console.log(game_variables.player_board.div_board)
 
 }
 
 
-
-function create_board(gameboard, board_id) {
+function create_board(gameboard, board_id, board_name) {
     let arrays = 10
     while (arrays > 0) {
         let array_count = 10
@@ -48,7 +53,12 @@ function create_board(gameboard, board_id) {
         while (array_count > 0) {
             var div = document.createElement("button");
             div.className = "cell"
-            div.addEventListener("click", grid_tile_hit);
+            if (game_variables.ships_placed == false && gameboard.name == "player") {
+                div.addEventListener("click", place_player_ships);
+            }
+            if (board_name == "computer") {
+                div.addEventListener("click", grid_tile_hit);
+            }
             document.getElementById(board_id).appendChild(div)
             array_count -= 1 
             b.push(div)
@@ -56,6 +66,31 @@ function create_board(gameboard, board_id) {
         arrays -= 1
         gameboard.div_board.push(b)
         }
+    }
+
+
+function place_player_ships() {
+    this.className = "hover"
+    get_tile_index.call(this)
+}
+
+
+function update_board(params) {
+    
+}
+
+
+function create_gameboard() {
+    let grid = []
+    i = []
+    for (i in range(0, 10)){
+        grid.push([])
+        for (b in range(0, 10)) {
+            grid[i].push(0)
+        }
+    }
+
+    return grid
     }
 
 
@@ -69,17 +104,21 @@ function create_new_grid(grid_id) {
 
 
 function grid_tile_hit() {
-    this.className = "tile_hit"
-    get_tile_index.call(this)
+    if (game_variables.current_turn == "player" && game_variables.ships_placed == true) {
+        this.className = "tile_hit"
+        get_tile_index.call(this)
+        game_variables.current_turn = "computer"
+    }
 }
 
-function get_tile_index(tile) {
-    let x = player_board.indexOf(this)
+
+function get_tile_index() {
+    let x = game_variables.player_gameboard.div_board.indexOf(this)
     let index_y = 0
     while (x == -1) {
-        x = player_board[index_y].indexOf(this)
+        x = game_variables.player_gameboard.div_board[index_y].indexOf(this)
         index_y += 1
     }
-    console.log(index_y, + " " + x )
+    console.log(index_y-1, + " " + x)
 }
 
