@@ -7,7 +7,6 @@ class gameboard {
         this.div_board = div_board
         this.board = board
         this.hits = hits
-        this.hidden_board = hidden_board
         this.MissesAndHits = MissesAndHits
         this.ship_value = ship_value
         this.div_board_unlocked = div_board_unlocked
@@ -36,11 +35,12 @@ function game_setup() {
     create_board(game_variables.player_gameboard, "#player-grid-container", "player")
     create_board(game_variables.computer_gameboard, "#computer-grid-container", "computer")
     game_variables.player_gameboard.board = create_gameboard()
-    game_variables.player_gameboard.hidden_board = create_gameboard()
-    game_variables.computer_gameboard.hidden_board = create_gameboard()
     game_variables.computer_gameboard.board = create_gameboard()
-    game_variables.player_gameboard.ship_list = [3, 4, 2, 2, 1]
+    game_variables.player_gameboard.ship_list = [3, 4]
+    game_variables.computer_gameboard.ship_list = [3, 4, 2, 4]
     game_variables.player_gameboard.ships_placed = false
+    place_ships_randomly_on_board()
+
 
 }
 
@@ -115,6 +115,51 @@ function create_new_grid(grid_id) {
     }
 
 
+function place_ships_randomly_on_board(){
+    let correct_x_y = false
+    while (correct_x_y == false && game_variables.player_gameboard.ships_placed == false){
+        let x = generateRandomInteger(0, 9)
+        let y = generateRandomInteger(0, 9)
+        if (y < 10 && x+game_variables.computer_gameboard.ship_list[0] < 10 && y > -1 && x > -1) {
+            if (game_variables.computer_gameboard.board[y][x] != 2){
+                if ( game_variables.computer_gameboard.ship_list != []) {
+                    board = place_computer_ship(y, x, game_variables.computer_gameboard.ship_list[0])
+                    game_variables.computer_gameboard.ship_list.shift();
+                    if (game_variables.computer_gameboard.ship_list.length == 0) {
+                        correct_x_y = true
+                    }
+                }
+            }
+        }
+    }
+
+    return board
+    
+}
+
+    function place_computer_ship(y, x, ship) { 
+        length = ship
+        game_variables.computer_gameboard.board[y-1][x] = 2;
+        if (length > 1){
+           game_variables.computer_gameboard.board[y-1][x+1] = 2;
+        }
+            if (length > 2){
+               game_variables.computer_gameboard.board[y-1][x+2] = 2;
+            }
+                if (length > 3){
+                   game_variables.computer_gameboard.board[y-1][x+3] = 2;
+                }
+                    if (length > 4){
+                        game_variables.computer_gameboard.board[y-1][x+4] = 2;
+                    }
+    }
+
+
+function generateRandomInteger(min, max) {
+    return Math.floor(min + Math.random()*(max + 1 - min))
+    }
+
+
 function place_ship(x, y, board, ship) { 
     length = ship
     let b = board[y-1][x]
@@ -141,30 +186,23 @@ function place_ship(x, y, board, ship) {
                     game_variables.player_gameboard.board[y-1][x+4] = 2
                     c.className = "ship_tile"
                 }
-
-
-
-    }
+}
 
 
 function grid_tile_hit() {
     if (game_variables.current_turn == "player" && game_variables.player_gameboard.ships_placed == true) {
-        //game_variables.current_turn = "computer"
-        //this.className = "tile_hit"
-        x = get_computer_tile_index.call(this)
-        console.log(x)
-        if (game_variables.computer_gameboard.board[y][x] != "X") {
-            if (game_variables.computer_gameboard.board[y][x] == 2){
+        let x = get_computer_tile_index.call(this)
+        //console.log(x[0], x[1] + " cords")
+        if (game_variables.computer_gameboard.board[x[0]][x[1]] != "X") {
+            if (game_variables.computer_gameboard.board[x[0]][x[1]] == 2){
                 this.className = "tile_hit"
+                game_variables.current_turn = "computer"
             }
-            if (game_variables.computer_gameboard.board[y][x] == 0) {
+            if (game_variables.computer_gameboard.board[x[0]][x[1]] == 0) {
                 this.className = "tile_miss"
+                game_variables.current_turn = "computer"
             }
         }
-
-
-
-
     }
 }
 
@@ -183,7 +221,6 @@ function get_tile_index() {
 }
 
 
-
 function get_computer_tile_index() {
     let x = game_variables.computer_gameboard.div_board.indexOf(this)
     let index_y = 0
@@ -191,7 +228,7 @@ function get_computer_tile_index() {
         x = game_variables.computer_gameboard.div_board[index_y].indexOf(this)
         index_y += 1
     }
-    console.log(index_y-1, + " " + x)
+    return [index_y-1, x]
 }
 
 
