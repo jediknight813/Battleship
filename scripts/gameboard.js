@@ -2,7 +2,7 @@ const range = (start, end) => Array.from({length: (end - start)}, (v, k) => k + 
 
 
 class gameboard {
-    constructor(name, ship_list, div_board=[], board=[], hits=0, ship_value=7, MissesAndHits=[], div_board_unlocked=false) {
+    constructor(name, ship_list, div_board=[], board=[], hits=0, ship_value=14, MissesAndHits=[], div_board_unlocked=false) {
         this.name = name
         this.div_board = div_board
         this.board = board
@@ -36,11 +36,10 @@ function game_setup() {
     create_board(game_variables.computer_gameboard, "#computer-grid-container", "computer")
     game_variables.player_gameboard.board = create_gameboard()
     game_variables.computer_gameboard.board = create_gameboard()
-    game_variables.player_gameboard.ship_list = [3, 4]
-    game_variables.computer_gameboard.ship_list = [4, 3]
+    game_variables.player_gameboard.ship_list = [3, 4, 2, 2, 3]
+    game_variables.computer_gameboard.ship_list = [4, 3, 2, 2, 3]
     game_variables.player_gameboard.ships_placed = false
     place_ships_randomly_on_board()
-
 
 }
 
@@ -50,18 +49,15 @@ function game_manager() {
         console.log("gameover")
     }
 
-
     if (game_variables.player_gameboard.ship_value == game_variables.player_gameboard.hits) {
         document.getElementById("status_text").innerText = "computer has won!"
         game_variables.gameover = true
     }
 
-
     if (game_variables.computer_gameboard.ship_value == game_variables.computer_gameboard.hits) {
         document.getElementById("status_text").innerText = "player has won!"
         game_variables.gameover = true
     }
-
 
     if (game_variables.current_turn == "player" && game_variables.gameover == false) {
         document.getElementById("status_text").innerText = "player turn"
@@ -69,10 +65,9 @@ function game_manager() {
 
     if (game_variables.current_turn == "computer" && game_variables.gameover == false) {
         document.getElementById("status_text").innerText = "computer turn"
-        computer_attack()
+        setTimeout(computer_attack, 500)
         game_variables.current_turn = "player"
     }
-
 
     setTimeout(game_manager, 1)
 }
@@ -237,13 +232,13 @@ function grid_tile_hit() {
     if (game_variables.current_turn == "player" && game_variables.player_gameboard.ships_placed == true) {
         let x = get_computer_tile_index.call(this)
         //console.log(x[0], x[1] + " cords")
-        if (game_variables.computer_gameboard.board[x[0]][x[1]] != "X") {
+        if (game_variables.computer_gameboard.board[x[0]][x[1]] != "X" && game_variables.computer_gameboard.div_board[x[0]][x[1]].className != "tile_hit" && game_variables.computer_gameboard.div_board[x[0]][x[1]].className != "tile_miss") {
             if (game_variables.computer_gameboard.board[x[0]][x[1]] == 2){
                 this.className = "tile_hit"
                 game_variables.current_turn = "computer"
                 game_variables.computer_gameboard.hits += 1
             }
-            if (game_variables.computer_gameboard.board[x[0]][x[1]] == 0) {
+            if (game_variables.computer_gameboard.board[x[0]][x[1]] == 0 && game_variables.computer_gameboard.div_board[x[0]][x[1]].className != "tile_hit" && game_variables.computer_gameboard.div_board[x[0]][x[1]].className != "tile_miss") {
                 this.className = "tile_miss"
                 game_variables.current_turn = "computer"
             }
