@@ -1,4 +1,4 @@
-a battleship game website for the oden project. 
+a battleship game website for the odin project. 
 
 a link to the website: https://jediknight813.github.io/Battleship/
 
